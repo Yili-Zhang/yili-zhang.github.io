@@ -160,11 +160,20 @@
 									<p>Manufacturing Process Control Laboratory, Oregon State University<br />
 									Advisor: <a href="http://mime.oregonstate.edu/people/burak-sencer">Burak Sencer</a><br /></p>
 								</header>
-								<!--<div class="image main">-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/CNCtable.jpg" alt="" style="width:425px;height:340px;" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/BoxD.jpg" alt="" style="width:425px;height:340px;" /><!--</div>-->
+								<!--<div class="image main">-->&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/CNCtable.jpg" alt="" style="width:425px;height:340px;" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/BoxD.jpg" alt="" style="width:425px;height:340px;" /><!--</div>-->
 								<p>The Electrical Box for CNC Machine is to provide purified electricities and programmable signals for the motor, which drives the CNC Table and guarantees precise motions. The electrical box is composed of: Switch, Filter, Amplifier, E-Stop, Motor and Metal box. The diagram below illustrates the connections between those components:</p>
 								<img src="images/Dia.jpg" alt="" align="middle" />
 								<p>The functionalities of each component are listed below:</p>
-								<p>1. <b>Three-Phase Power Supply:</b> Three-phase electric power supply was used to support the three-phase induction motor. How it works is three conductors each carry an alternating current of the same frequency and voltage amplitude relative to a common reference but with a phase difference of one third the period. In comparison with single-phase power supply, three-phase power supply can carry heavier load, and it is also more ecnomically efficient.</p>
+								<p>1. <b>Three-Phase Power Supply:</b> Three-phase electric power supply is used to support the three-phase induction motor. How it works is three conductors each carry an alternating current of the same frequency and voltage amplitude relative to a common reference but with a phase difference of one third the period. In comparison with single-phase power supply, three-phase power supply can carry heavier load, and it is also more ecnomically efficient.</p>
+								<p>2. <b>Switch:</b> Switch is out-of-box and is used to manually turn on and off the system. As the result, I selected a 3 Poles-Toggle Style, DIN-Rail Mount AC Equipment Circuit Breaker.</p>
+								<p>3. <b>Filter:</b> Electrical filter is out-of-box and is used to filter out the noises in electricities. In this scenario, I chose a 488/277 VAC, 16 A  1-Stage filter from the Schaffner Company.</p>
+								<p>4. <b>E-Stop:</b> Emergency Stop Button is out-of-box and is used to immediately cut power with a single push in emergent situations.</p>
+								<p>5. <b>24 V DC Power Supplier:</b> 24 V DC Power Supplier, also called AC-to-DC transformer, is out-of-box and is used to translate 120V AC power into 24V DC power. In this appication, the 24V DC power is used to power the Safe Torque Off (STO) feature.</p>
+								<p>6. <b>STO:</b> Safe Torque Off (STO) is a restart lock safety feature that is embedded inside of Amplifier. It is used to protect personnel by preventing an unintentional system restart.</p>
+								<p>7. <b>Amplifier:</b> Amplifier is the "CPU" of the electrical box, and I selected the Kollmorgen AKD Amplifier in this project. As illustrated in the Diagram above, electricities coming out of the filter goes through the amplifer to power on the motor. At the same time, the amplifier is tuned through its software (Kollmorgen Workbench) to determine the inertias and friction factors of the free motor. In addition, the E-Stop and STO will cut the power of the amplifier first whenever a emergency occurs. Also, the D-Space equipment is connect with the Amplifiers to exchange control signals with it. Below is the minimum wiring for the amplifier:
+								<span class="image middle"><img src="images/Amp.png" alt="" /></span></p>
+								<p>Furthermore, motor tuning was an important step to set up the CNC Table.</p>
+
 							</section>
 
 							<!--Senior Project-->
