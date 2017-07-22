@@ -172,8 +172,10 @@
 								<p>6. <b>STO:</b> Safe Torque Off (STO) is a restart lock safety feature that is embedded inside of Amplifier. It is used to protect personnel by preventing an unintentional system restart.</p>
 								<p>7. <b>Amplifier:</b> Amplifier is the "CPU" of the electrical box, and I selected the Kollmorgen AKD Amplifier in the project. As illustrated in the Diagram above, electricities coming out of the filter goes through the amplifer to power on the motor. At the same time, the amplifier is tuned through its software (Kollmorgen Workbench) to determine the inertias and friction factors of the free motor. In addition, the E-Stop and STO will cut the power of the amplifier first whenever a emergency occurs. Also, the D-Space equipment is connect with the Amplifiers to exchange control signals with it. Below is the minimum wiring for the amplifier:</p>
 								<!--<img src="images/Amp.png" alt="" align="middle" style="width:750px;height:500px;" />-->
-								<div class="image main"><img src="images/Amp.png" alt="" style="width:750px;height:500px;" /></div>
-								<p>Furthermore, motor tuning was an important step to set up the CNC Table. </p>
+								<div class="image main"><img src="images/Amp.png" alt="" /></div>
+								<p>8. <b>Motor Tuning:</b> Workbench is a tuning software comes with the Kollmorgan Amplifier. It is used to adjust the motor to yield its optimal performance. Below is the main page of the software interface, as shown in the screenshot, the system is tuned with position/current loop.</p>
+								<img src="images/setting.png" alt="" align="middle" />
+								<p>Here is the tuning procedure: <b>Firstly</b>, as shown in the amplifier wiring diagram, a ethernet cable connects the PC and the X11 port of the amplifier, and the IP address of the amplifier is configured properly on the same subnet as the controll. <b>Secondly</b>, a signal generator is connected to the analog input port (X7), and an oscilloscope is connected to the analog output port (X8). <b>Lastly</b>, adjust the analog input and output scale parameters in the software to make sure that the performance of motor and the outcome signal on the oscilloscope match the signal input.<p>
 
 							</section>
 
