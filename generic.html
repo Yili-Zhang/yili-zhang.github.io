@@ -331,7 +331,57 @@ N240 M30
 								<h4>Blending Functionality</h4>
 								<p>The blending functionality means, in a trajectory planning, each subsequent motion is started before the previous has reached its desired position. Otherwire, if each subsequent motion is started after the previous has reached its desired position, we say there is no blending, or there is 0% blending. The picture on the left below shows an example of 100% blending.</p>
 								<img src="images/Blend3.jpg" alt="" style="width:450px;height:360px;" /><img src="images/VInt.png" alt="" style="width:425px;height:340px;" />
-								<p>To further understanding the definition of blending functionality, let's introduce the exponential velocity profile first: As shown in the picture right above, </p>
+								<p>To further understanding the definition of blending functionality, let's introduce the exponential velocity profile first: As shown in the picture right above, The x axis represents time in second, and the y axis represents velocity in m/s and position in meter.In the paper, an exponential velocity equation was given, and it is the blue line in the profile, then the velocity was integrated to find the instantaneous position of a path. In my integration, I applied the forward differentiation equation with the sampling time as 1 ms.<br /> For sequence of n motion, the total travel time Tt of a 0% blending is:<br /><b>Tt = ( X_1 + X_2 + ... + X_n ) / V_max + n * Ts</b><br />while the total travel time Tt of a 100% blending is:<br /><b>Tt = ( X_1 + X_2 + ... + X_n ) / V_max + Ts</b></p>
+								<p>Based on the principles above, I reapeated the mathematical experiment in the paper: create a figure of eight path with various blend parameters. In my code, I did 0% overlap, 60% overlap, 80% overlap and 96% overlap for the same geometry. The result and the enlarged result are shown below:</p>
+								<img src="images/blend1.png" alt="" style="width:450px;height:360px;" /><img src="images/blend2.png" alt="" style="width:450px;height:360px;" />
+								<p>As shown in figures, the higher the parameter of blending, the less accurate of the path. Furhtermore, I calculated the motion durations with different percentage of overlap, and the result is tabulated below:</p>
+								<!--table-->
+								<head>
+<style>
+table {
+    width:100%;
+}
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 5px;
+    text-align: left;
+}
+table#t01 tr:nth-child(even) {
+    background-color: #eee;
+}
+table#t01 tr:nth-child(odd) {
+   background-color:#fff;
+}
+table#t01 th {
+    background-color: black;
+    color: white;
+}
+</style>
+</head>
+<body>
+
+<table id="t01">
+  <tr>
+    <th>&nbsp;</th>
+    <th>0% Overlap</th> 
+    <th>60% Overlap</th>
+    <th>80% Overlap</th>
+    <th>96% Overlap</th>
+  </tr>
+  <tr>
+    <td>Tt (s)</td>
+    <td>5.0429</td>
+    <td>3.5655</td>
+    <td>3.0730</td>
+    <td>2.6790</td>
+  </tr>
+</table>
+
+</body>
+                            <p>As indicated in the table, the higher the parameter of blending, the less total travel time. Therefore, <b>There is always a trade-off between the time optimal and accuracy.</b></p>
 							</section>
 
 					</div>
