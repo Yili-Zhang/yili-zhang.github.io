@@ -326,15 +326,15 @@ N240 M30
 								<div class="image main"><img src="images/accel.png" alt="" /></div>
 								<p>The purpose of this project is to repeat the new method to generate point-to-point (PTP) trajectories presented by this paper. The new method uses an exponential function as the basis for the trajectory profile. Before this method was presented, trapezoidal-velocity mothod and S-curve method were commonly used. In this project, I will compare those three different methods, and repeat the result of the blending functionality demonstrated in the paper.</p>
 								<h4>Exponential Method vs Trapezaoidal Method vs S-curve Method</h4>
-								<p><span class="image right"><img src="images/rect.png" alt="" /></span>Trajectory plan is an important step in precition motion. The S-curve method has a trapezoidal acceleration profile and a bounded jerk profile. The trapezoidal method has a rectangular acceleration and unbounded jerk profile, and the new-introduced exponential method has a near-sinusoidal jerk profile, as shown in the picture at the beginning. It was expected that the smoother the jerk profile is, the more accurate the path is. The repeated results also proved this hypothesis, as shown in the picture on the right.</p>
+								<p><span class="image right"><img src="images/rect.png" alt="" /></span>Trajectory plan is an important step in precition motion. The S-curve method has a trapezoidal acceleration profile and a bounded jerk profile. The trapezoidal method has a rectangular acceleration and unbounded jerk profile, and the new-introduced exponential method has a near-sinusoidal jerk profile, as shown in the picture at the beginning. It was expected that <b>the smoother the jerk profile is, the more accurate the path is.</b> The repeated results also proved this hypothesis, as shown in the picture on the right.</p>
 								<!--code here-->
 								<h4>Blending Functionality</h4>
-								<p>The blending functionality means, in a trajectory planning, each subsequent motion is started before the previous has reached its desired position. Otherwire, if each subsequent motion is started after the previous has reached its desired position, we say there is no blending, or there is 0% blending. The picture on the left below shows an example of 100% blending.</p>
-								<img src="images/Blend3.jpg" alt="" style="width:450px;height:360px;" /><img src="images/VInt.png" alt="" style="width:425px;height:340px;" />
-								<p>To further understanding the definition of blending functionality, let's introduce the exponential velocity profile first: As shown in the picture right above, The x axis represents time in second, and the y axis represents velocity in m/s and position in meter.In the paper, an exponential velocity equation was given, and it is the blue line in the profile, then the velocity was integrated to find the instantaneous position of a path. In my integration, I applied the forward differentiation equation with the sampling time as 1 ms.<br /> For sequence of n motion, the total travel time Tt of a 0% blending is:<br /><b>Tt = ( X_1 + X_2 + ... + X_n ) / V_max + n * Ts</b><br />while the total travel time Tt of a 100% blending is:<br /><b>Tt = ( X_1 + X_2 + ... + X_n ) / V_max + Ts</b></p>
+								<p>The blending functionality means, in a trajectory planning, each subsequent motion is started before the previous has reached its desired position. Otherwire, if each subsequent motion is started after the previous has reached its desired position, we say there is no blending, or there is 0% blending. The picture below shows an example of 100% blending.</p>
+								<img src="images/Blend3.jpg" alt="" style="width:700px;height:525px;" /><br /><img src="images/VInt.png" alt="" style="width:700px;height:525px;" />
+								<p>To further understanding the definition of blending functionality, let's introduce the exponential velocity profile first: As shown in the picture above, The x axis represents time in second, and the y axis represents velocity in m/s and position in meter.In the paper, an exponential velocity equation was given, and it is the blue line in the profile, then the velocity was integrated to find the instantaneous position of a path. In my integration, I applied the forward differentiation equation with the sampling time as 1 ms.<br /> For sequence of n motion, the total travel time Tt of a 0% blending is:<br /><b>Tt = ( X_1 + X_2 + ... + X_n ) / V_max + n * Ts</b><br />while the total travel time Tt of a 100% blending is:<br /><b>Tt = ( X_1 + X_2 + ... + X_n ) / V_max + Ts</b></p>
 								<p>Based on the principles above, I reapeated the mathematical experiment in the paper: create a figure of eight path with various blend parameters. In my code, I did 0% overlap, 60% overlap, 80% overlap and 96% overlap for the same geometry. The result and the enlarged result are shown below:</p>
-								<img src="images/blend1.png" alt="" style="width:450px;height:360px;" /><img src="images/blend2.png" alt="" style="width:450px;height:360px;" />
-								<p>As shown in figures, the higher the parameter of blending, the less accurate of the path. Furhtermore, I calculated the motion durations with different percentage of overlap, and the result is tabulated below:</p>
+								<img src="images/blend1.png" alt="" style="width:700px;height:525px;" /><br /><img src="images/blend2.png" alt="" style="width:700px;height:525px;" />
+								<p>As shown in the figure, the higher the parameter of blending, the less accurate of the path. Furhtermore, I calculated the motion durations with different percentage of overlap, and the result is tabulated below:</p>
 								<!--table-->
 								<head>
 <style>
@@ -381,7 +381,311 @@ table#t01 th {
 </table>
 
 </body>
-                            <p>As indicated in the table, the higher the parameter of blending, the less total travel time. Therefore, <b>There is always a trade-off between the time optimal and accuracy.</b></p>
+                            <p>As indicated in the table, the higher the parameter of blending, the less total travel time. Therefore, <b>there is always a trade-off between the time optimal and accuracy.</b></p>
+                            <p>In case for the further reference, below I attach the MATLAB code that I generated to repeat the blending results:</p>
+                            <pre><code>clear 
+clc
+
+Ax=0.16; Ay=0.1;
+Bx=0.08; By=0.15;
+Cx=0; Cy=0.1;
+Dx=-0.05; Dy=0;
+Ex=-0.13; Ey=-0.05;
+Fx=-0.21; Fy=0;
+Gx=-0.21; Gy=0.1;
+Hx=-0.13; Hy=0.15;
+Ix=-0.05; Iy=0.1;
+Jx=0; Jy=0;
+Kx=0.08; Ky=-0.05;
+Lx=0.16; Ly=0;
+
+ABx=abs(Ax-Bx); ABy=abs(Ay-By);
+BCx=abs(Bx-Cx); BCy=abs(By-Cy);
+CDx=abs(Cx-Dx); CDy=abs(Cy-Dy);
+DEx=abs(Dx-Ex); DEy=abs(Dy-Ey);
+EFx=abs(Ex-Fx); EFy=abs(Ey-Fy);
+FGx=abs(Fx-Gx); FGy=abs(Fy-Gy);
+GHx=abs(Gx-Hx); GHy=abs(Gy-Hy);
+HIx=abs(Hx-Ix); HIy=abs(Hy-Iy);
+IJx=abs(Ix-Jx); IJy=abs(Iy-Jy);
+JKx=abs(Jx-Kx); JKy=abs(Jy-Ky);
+KLx=abs(Kx-Lx); KLy=abs(Ky-Ly);
+LAx=abs(Lx-Ax); LAy=abs(Ly-Ay);
+
+X=[ABx BCx CDx DEx EFx FGx GHx HIx IJx JKx KLx LAx];
+Y=[ABy BCy CDy DEy EFy FGy GHy HIy IJy JKy KLy LAy];
+XY=[sqrt(X.^2+Y.^2)]';
+
+V_max=0.5; % m/s
+A_max=5; % m/s^2
+J_max=200; % m/s^3
+d_t=0.01; % s
+alpha=min(A_max/1.1754/V_max,sqrt(J_max/2.1524/V_max));
+Ts=1.9045/alpha;
+
+Td=XY./V_max;
+
+% AB
+t1=0:0.01:(Td(1)+Ts);
+n1=numel(t1);
+for k=1:n1
+    ft_1=V_max.*(1-exp(-(alpha.*t1(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t1(k)-Td(1)))^3));
+    if (t1(k)-Td(1))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v1(k)=ft_1-ft_2*H;
+    v1x(k)=-v1(k).*cos(atan(0.5/0.8));
+    v1y(k)=v1(k).*sin(atan(0.5/0.8));
+end
+
+% BC
+t2=0:0.01:(Td(2)+Ts);
+n2=numel(t2);
+for k=1:n2
+    ft_1=V_max.*(1-exp(-(alpha.*t2(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t2(k)-Td(2)))^3));
+    if (t2(k)-Td(2))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v2(k)=ft_1-ft_2*H;
+    v2x(k)=-v2(k).*cos(atan(0.5/0.8));
+    v2y(k)=-v2(k).*sin(atan(0.5/0.8));
+end
+
+% CD
+t3=0:0.01:(Td(3)+Ts);
+n3=numel(t3);
+for k=1:n3
+    ft_1=V_max.*(1-exp(-(alpha.*t3(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t3(k)-Td(3)))^3));
+    if (t3(k)-Td(3))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v3(k)=ft_1-ft_2*H;
+    v3x(k)=-v3(k).*cos(atan(0.1/0.05));
+    v3y(k)=-v3(k).*sin(atan(0.1/0.05));
+end
+
+% DE
+t4=0:0.01:(Td(4)+Ts);
+n4=numel(t4);
+for k=1:n4
+    ft_1=V_max.*(1-exp(-(alpha.*t4(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t4(k)-Td(4)))^3));
+    if (t4(k)-Td(4))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v4(k)=ft_1-ft_2*H;
+    v4x(k)=-v4(k).*cos(atan(0.05/0.08));
+    v4y(k)=-v4(k).*sin(atan(0.05/0.08));
+end
+
+% EF
+t5=0:0.01:(Td(5)+Ts);
+n5=numel(t5);
+for k=1:n2
+    ft_1=V_max.*(1-exp(-(alpha.*t5(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t5(k)-Td(5)))^3));
+    if (t5(k)-Td(5))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v5(k)=ft_1-ft_2*H;
+    v5x(k)=-v5(k).*cos(atan(0.5/0.8));
+    v5y(k)=v5(k).*sin(atan(0.5/0.8));
+end
+
+% FG
+t6=0:0.01:(Td(6)+Ts);
+n6=numel(t6);
+for k=1:n6
+    ft_1=V_max.*(1-exp(-(alpha.*t6(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t6(k)-Td(6)))^3));
+    if (t6(k)-Td(6))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v6(k)=ft_1-ft_2*H;
+    v6x(k)=v6(k).*0;
+    v6y(k)=v6(k);
+end
+
+% GH
+t7=0:0.01:(Td(7)+Ts);
+n7=numel(t7);
+for k=1:n7
+    ft_1=V_max.*(1-exp(-(alpha.*t7(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t7(k)-Td(7)))^3));
+    if (t7(k)-Td(7))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v7(k)=ft_1-ft_2*H;
+    v7x(k)=v7(k).*cos(atan(0.5/0.8));
+    v7y(k)=v7(k).*sin(atan(0.5/0.8));
+end
+
+% HI
+t8=0:0.01:(Td(8)+Ts);
+n8=numel(t8);
+for k=1:n8
+    ft_1=V_max.*(1-exp(-(alpha.*t8(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t8(k)-Td(8)))^3));
+    if (t8(k)-Td(8))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v8(k)=ft_1-ft_2*H;
+    v8x(k)=v8(k).*cos(atan(0.5/0.8));
+    v8y(k)=-v8(k).*sin(atan(0.5/0.8));
+end
+
+% IJ
+t9=0:0.01:(Td(9)+Ts);
+n9=numel(t9);
+for k=1:n9
+    ft_1=V_max.*(1-exp(-(alpha.*t9(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t9(k)-Td(9)))^3));
+    if (t9(k)-Td(9))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v9(k)=ft_1-ft_2*H;
+    v9x(k)=v9(k).*cos(atan(0.1/0.05));
+    v9y(k)=-v9(k).*sin(atan(0.1/0.05));
+end
+
+% JK
+t10=0:0.01:(Td(10)+Ts);
+n10=numel(t10);
+for k=1:n10
+    ft_1=V_max.*(1-exp(-(alpha.*t10(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t10(k)-Td(10)))^3));
+    if (t10(k)-Td(10))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v10(k)=ft_1-ft_2*H;
+    v10x(k)=v10(k).*cos(atan(0.5/0.8));
+    v10y(k)=-v10(k).*sin(atan(0.5/0.8));
+end
+
+% KL
+t11=0:0.01:(Td(11)+Ts);
+n11=numel(t11);
+for k=1:n11
+    ft_1=V_max.*(1-exp(-(alpha.*t11(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t11(k)-Td(11)))^3));
+    if (t11(k)-Td(11))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v11(k)=ft_1-ft_2*H;
+    v11x(k)=v11(k).*cos(atan(0.5/0.8));
+    v11y(k)=v11(k).*sin(atan(0.5/0.8));
+end
+
+% LA
+t12=0:0.01:(Td(12)+Ts);
+n12=numel(t12);
+for k=1:n12
+    ft_1=V_max.*(1-exp(-(alpha.*t12(k))^3));
+    ft_2=V_max.*(1-exp(-(alpha.*(t12(k)-Td(12)))^3));
+    if (t12(k)-Td(12))< 0
+        H=0;
+    else
+        H=1;
+    end
+    v12(k)=ft_1-ft_2*H;
+    v12x(k)=v12(k).*0;
+    v12y(k)=v12(k);
+end
+
+%% 0% Overlap
+T_zero=sum(Td)+12*Ts;
+Vx_zero=[v1x v2x v3x v4x v5x v6x v7x v8x v9x v10x v11x v12x];
+Vy_zero=[v1y v2y v3y v4y v5y v6y v7y v8y v9y v10y v11y v12y];
+X_zero(1)=0.16;
+Y_zero(1)=0.1;
+for k=1:numel(Vx_zero)
+    X_zero(k+1)=Vx_zero(k).*d_t+X_zero(k);
+    Y_zero(k+1)=Vy_zero(k).*d_t+Y_zero(k);
+end
+x_zero=X_zero(1:k);
+y_zero=Y_zero(1:k);
+plot(x_zero,y_zero)
+hold on;
+
+%% 60% Overlap
+T_sixty=T_zero-11*0.6*Ts;
+q=int16(0.6*Ts/d_t);
+Vx_sixty=[v1x(1:(n1-q)) v1x((n1-q+1):n1)+v2x(1:q) v2x((q+1):(n2-q)) v2x((n2-q+1):n2)+v3x(1:q) v3x((q+1):(n3-q)) v3x((n3-q+1):n3)+v4x(1:q) v4x((q+1):(n4-q)) v4x((n4-q+1):n4)+v5x(1:q) v5x((q+1):(n5-q)) v5x((n5-q+1):n5)+v6x(1:q) v6x((q+1):(n6-q)) v6x((n6-q+1):n6)+v7x(1:q) v7x((q+1):(n7-q)) v7x((n7-q+1):n7)+v8x(1:q) v8x((q+1):(n8-q)) v8x((n8-q+1):n8)+v9x(1:q) v9x((q+1):(n9-q)) v9x((n9-q+1):n9)+v10x(1:q) v10x((q+1):(n10-q)) v10x((n10-q+1):n10)+v11x(1:q) v11x((q+1):(n11-q)) v11x((n11-q+1):n11)+v12x(1:q) v12x((q+1):n12)];
+Vy_sixty=[v1y(1:(n1-q)) v1y((n1-q+1):n1)+v2y(1:q) v2y((q+1):(n2-q)) v2y((n2-q+1):n2)+v3y(1:q) v3y((q+1):(n3-q)) v3y((n3-q+1):n3)+v4y(1:q) v4y((q+1):(n4-q)) v4y((n4-q+1):n4)+v5y(1:q) v5y((q+1):(n5-q)) v5y((n5-q+1):n5)+v6y(1:q) v6y((q+1):(n6-q)) v6y((n6-q+1):n6)+v7y(1:q) v7y((q+1):(n7-q)) v7y((n7-q+1):n7)+v8y(1:q) v8y((q+1):(n8-q)) v8y((n8-q+1):n8)+v9y(1:q) v9y((q+1):(n9-q)) v9y((n9-q+1):n9)+v10y(1:q) v10y((q+1):(n10-q)) v10y((n10-q+1):n10)+v11y(1:q) v11y((q+1):(n11-q)) v11y((n11-q+1):n11)+v12y(1:q) v12y((q+1):n12)];
+X_sixty(1)=0.16;
+Y_sixty(1)=0.1;
+for k=1:numel(Vx_sixty)
+    X_sixty(k+1)=Vx_sixty(k).*d_t+X_sixty(k);
+    Y_sixty(k+1)=Vy_sixty(k).*d_t+Y_sixty(k);
+end
+x_sixty=X_sixty(1:k);
+y_sixty=Y_sixty(1:k);
+plot(x_sixty,y_sixty)
+hold on;
+
+%% 80% Overlap
+T_eighty=T_zero-11*0.8*Ts;
+q=int16(0.8*Ts/d_t);
+Vx_eighty=[v1x(1:(n1-q)) v1x((n1-q+1):n1)+v2x(1:q) v2x((q+1):(n2-q)) v2x((n2-q+1):n2)+v3x(1:q) v3x((q+1):(n3-q)) v3x((n3-q+1):n3)+v4x(1:q) v4x((q+1):(n4-q)) v4x((n4-q+1):n4)+v5x(1:q) v5x((q+1):(n5-q)) v5x((n5-q+1):n5)+v6x(1:q) v6x((q+1):(n6-q)) v6x((n6-q+1):n6)+v7x(1:q) v7x((q+1):(n7-q)) v7x((n7-q+1):n7)+v8x(1:q) v8x((q+1):(n8-q)) v8x((n8-q+1):n8)+v9x(1:q) v9x((q+1):(n9-q)) v9x((n9-q+1):n9)+v10x(1:q) v10x((q+1):(n10-q)) v10x((n10-q+1):n10)+v11x(1:q) v11x((q+1):(n11-q)) v11x((n11-q+1):n11)+v12x(1:q) v12x((q+1):n12)];
+Vy_eighty=[v1y(1:(n1-q)) v1y((n1-q+1):n1)+v2y(1:q) v2y((q+1):(n2-q)) v2y((n2-q+1):n2)+v3y(1:q) v3y((q+1):(n3-q)) v3y((n3-q+1):n3)+v4y(1:q) v4y((q+1):(n4-q)) v4y((n4-q+1):n4)+v5y(1:q) v5y((q+1):(n5-q)) v5y((n5-q+1):n5)+v6y(1:q) v6y((q+1):(n6-q)) v6y((n6-q+1):n6)+v7y(1:q) v7y((q+1):(n7-q)) v7y((n7-q+1):n7)+v8y(1:q) v8y((q+1):(n8-q)) v8y((n8-q+1):n8)+v9y(1:q) v9y((q+1):(n9-q)) v9y((n9-q+1):n9)+v10y(1:q) v10y((q+1):(n10-q)) v10y((n10-q+1):n10)+v11y(1:q) v11y((q+1):(n11-q)) v11y((n11-q+1):n11)+v12y(1:q) v12y((q+1):n12)];
+X_eighty(1)=0.16;
+Y_eighty(1)=0.1;
+for k=1:numel(Vx_eighty)
+    X_eighty(k+1)=Vx_eighty(k).*d_t+X_eighty(k);
+    Y_eighty(k+1)=Vy_eighty(k).*d_t+Y_eighty(k);
+end
+x_eighty=X_eighty(1:k);
+y_eighty=Y_eighty(1:k);
+plot(x_eighty,y_eighty)
+hold on;
+
+%% 96% Overlap
+T_hun=T_zero-11*0.96*Ts;
+q=floor(Ts*0.96/d_t);
+Vx_hun=[v1x(1:(n1-q)) v1x((n1-q+1):n1)+v2x(1:q) v2x((q+1):(n2-q)) v2x((n2-q+1):n2)+v3x(1:q) v3x((q+1):(n3-q)) v3x((n3-q+1):n3)+v4x(1:q) v4x((q+1):(n4-q)) v4x((n4-q+1):n4)+v5x(1:q) v5x((q+1):(n5-q)) v5x((n5-q+1):n5)+v6x(1:q) v6x((q+1):(n6-q)) v6x((n6-q+1):n6)+v7x(1:q) v7x((q+1):(n7-q)) v7x((n7-q+1):n7)+v8x(1:q) v8x((q+1):(n8-q)) v8x((n8-q+1):n8)+v9x(1:q) v9x((q+1):(n9-q)) v9x((n9-q+1):n9)+v10x(1:q) v10x((q+1):(n10-q)) v10x((n10-q+1):n10)+v11x(1:q) v11x((q+1):(n11-q)) v11x((n11-q+1):n11)+v12x(1:q) v12x((q+1):n12)];
+Vy_hun=[v1y(1:(n1-q)) v1y((n1-q+1):n1)+v2y(1:q) v2y((q+1):(n2-q)) v2y((n2-q+1):n2)+v3y(1:q) v3y((q+1):(n3-q)) v3y((n3-q+1):n3)+v4y(1:q) v4y((q+1):(n4-q)) v4y((n4-q+1):n4)+v5y(1:q) v5y((q+1):(n5-q)) v5y((n5-q+1):n5)+v6y(1:q) v6y((q+1):(n6-q)) v6y((n6-q+1):n6)+v7y(1:q) v7y((q+1):(n7-q)) v7y((n7-q+1):n7)+v8y(1:q) v8y((q+1):(n8-q)) v8y((n8-q+1):n8)+v9y(1:q) v9y((q+1):(n9-q)) v9y((n9-q+1):n9)+v10y(1:q) v10y((q+1):(n10-q)) v10y((n10-q+1):n10)+v11y(1:q) v11y((q+1):(n11-q)) v11y((n11-q+1):n11)+v12y(1:q) v12y((q+1):n12)];
+X_hun(1)=0.16;
+Y_hun(1)=0.1;
+for k=1:numel(Vy_hun)
+    X_hun(k+1)=Vx_hun(k).*d_t+X_hun(k);
+    Y_hun(k+1)=Vy_hun(k).*d_t+Y_hun(k);
+end
+x_hun=X_hun(1:k);
+y_hun=Y_hun(1:k);
+plot(x_hun,y_hun)
+plot(0.16,0.1,'kx',0.08,0.15,'kx',0,0.1,'kx',-0.05,0,'kx',-0.13,-0.05,'kx',-0.21,0,'kx',-0.21,0.1,'kx',-0.13,0.15,'kx',-0.05,0.1,'kx',0,0,'kx',0.08,-0.05,'kx',0.16,0,'kx');
+hold off;
+xlim([-0.25 0.2])
+ylim([-0.05 0.25])
+xlabel('X - Position [m]');
+ylabel('Y - Position [m]');
+legend('0% Overlap','60% Overlap','80% Overlap','96% Overlap','Corners');
+</code></pre>
 							</section>
 
 					</div>
