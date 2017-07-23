@@ -222,8 +222,81 @@
 									Instructor: <a href="http://mime.oregonstate.edu/people/burak-sencer">Burak Sencer</a><br /></p>
 								</header>
 								<img src="images/Blank.jpg" alt="" style="width:425px;height:340px;" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="images/Mode.jpg" alt="" style="width:425px;height:340px;" />
-								<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur sapien risus, commodo eget turpis at, elementum convallis enim turpis, lorem ipsum dolor sit amet nullam.</p>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus. Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum.</p>
+								<p>The purpose of this project is to design and machine a part on a CNC machine. As shown in the picture above, a blank rectangular block with specific dimensions was given, and I was required to design my part with the given dimensions and leave 0.2 inch from the edges of the part for fixturing and safety. The cutting tool has a diameter of D=1/4 inch and it is a 4 flute solid end-mill. The maximum federate of X and Y axis is 12 inch/min, and Z 2 inch/min. The spindle speed was selected to be S=750 rpm, and the cutting depth was 1/2 inch. The design process includes three steps: Design with the SolidWorks, define and gain the locations of points and generate NC codes.</p>
+								<h4>Design with the SolidWorks</h4>
+								<p>To design an appropriate part, I firstly sketched a rough draft and made sure that the diameter of drill bit was calculated in, so that the letters would not overlap with each other while being machined. Then, I transferred the sketch into a precise SolidWorks drawing, as shown below:</p>
+								<img src="images/Solid.jpg" alt="" style="width:700px;height:525px;" />
+								<h4>Define and gain the locations of points</h4>
+								<p>After the SolidWorks design, 20 pints was defined in sequence of machining, as shown in figure below:</p>
+								<img src="images/Solid2.jpg" alt="" style="width:700px;height:525px;" />
+								<p>In addition, the location of those 20 ponts in relative to the origin are listed in table below (G-code table):</p>
+								<img src="images/Table.png" alt="" />
+								<h4>Generate NC codes</h4>
+								<p>Based on the G-code table, a NC code was generated accordingly:</p>
+								<pre><code>N2
+N5 G70 G90 G17 G40
+N10 G00 X0.0 Y0.0 T1 M06
+N15 S750
+N16 Z0.25
+N20 G00 X0.325 Y0.325
+N26 G01
+N30 Z0.15 F2.0
+N35 Z-0.25
+N40 G01 X0.325 Y0.325 Z-0.25 F12.0
+N45 X0.325 Y2.175
+N50 X3.675
+N55 Y0.325
+N60 X0.325
+N61 Z0.25
+N65 G00 X0.625 Y0.625
+N71 G01
+N75 Z0.15 F2.0
+N80 Z-0.25
+N85 G01 X0.625 Y0.625 Z-0.25 F12.0
+N90 Y1.875
+N95 X1.4 Y0.625
+N100 Y1.875
+N101 Z0.25
+N105 G00 X1.775 Y0.625 
+N111 G01
+N115 Z0.15 F2.0
+N120 Z-0.25
+N125 G01 X1.775 Y0.625 Z-0.25 F12.0
+N130 Y1.875
+N135 X1.975
+N136 G91
+N140 G02 X0.0 Y-0.5 I0.0 J-0.25
+N141 G90
+N145 G01 X1.775
+N146 Z0.25
+N150 G00 X1.775 Y1.125
+N156 G01
+N160 Z0.15 F2.0
+N165 Z-0.25
+N170 G01 X1.775 Y1.125
+N175 X1.975
+N176 G91
+N180 G02 X0.0 Y-0.5 I0.0 J-0.25
+N181 G90
+N185 G01 X1.775
+N186 Z0.25
+N190 G00 X3.35 Y1.0
+N196 G01
+N200 Z0.15 F2.0
+N205 Z-0.25
+N206 G91
+N210 G02 X-0.75 Y0.0 I-0.375 J0.0 F12.0
+N211 G90
+N215 G01 Y1.5
+N216 G91
+N220 G02 X0.75 Y0.0 I0.375 J0.0
+N221 G90
+N225 G00 Z1.0
+N230 M05
+N235 G28
+N240 M30
+
+                                </code></pre>
 							</section>
 
 							<!--Trajectory Plan-->
