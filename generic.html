@@ -190,9 +190,17 @@
 									Advisor: <a href="http://mime.oregonstate.edu/people/albertani">Roberto Albertani</a><br />
 								    Supervising Instructor: <a href="http://mime.oregonstate.edu/people/nancy-squires">Nancy Squires</a></p>
 								</header>
-								<div class="image main"><img src="images/pic01.jpg" alt="" /></div>
+								<div class="image main"><img src="images/DBF2.jpg" alt="" /></div>
 								<p>Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum sit amet, fergiat. Pellentesque in mi eu massa lacinia malesuada et a elit. Donec urna ex, lacinia in purus ac, pretium pulvinar mauris. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur sapien risus, commodo eget turpis at, elementum convallis enim turpis, lorem ipsum dolor sit amet nullam.</p>
-								<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Etiam tristique libero eu nibh porttitor fermentum. Nullam venenatis erat id vehicula viverra. Nunc ultrices eros ut ultricies condimentum. Mauris risus lacus, blandit sit amet venenatis non, bibendum vitae dolor. Nunc lorem mauris, fringilla in aliquam at, euismod in lectus. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In non lorem sit amet elit placerat maximus. Pellentesque aliquam maximus risus. Donec eget ex magna. Interdum et malesuada fames ac ante ipsum primis in faucibus. Pellentesque venenatis dolor imperdiet dolor mattis sagittis. Praesent rutrum sem diam, vitae egestas enim auctor sit amet. Pellentesque leo mauris, consectetur id ipsum.</p>
+								<h4>Aerodynamic</h4>
+								<p>#</p>
+								<h4>Material</h4>
+								<p>#</p>
+								<h4>Manufacturing</h4>
+								<p>#</p>
+								<h4>Propulsion</h4>
+								<p>#</p>
+
 							</section>
 
 							<!--ProjectD-->
@@ -330,7 +338,7 @@ N240 M30
 								<h4>Blending Functionality</h4>
 								<p>The blending functionality means, in a trajectory planning, each subsequent motion is started before the previous has reached its desired position. Otherwire, if each subsequent motion is started after the previous has reached its desired position, we say there is no blending, or there is 0% blending. The picture below shows an example of 100% blending.</p>
 								<img src="images/Blend3.jpg" alt="" style="width:700px;height:525px;" /><br /><img src="images/VInt.png" alt="" style="width:700px;height:525px;" />
-								<p>To further understanding the definition of blending functionality, let's introduce the exponential velocity profile first: As shown in the picture above, The x axis represents time in second, and the y axis represents velocity in m/s and position in meter.In the paper, an exponential velocity equation was given, and it is the blue line in the profile, then the velocity was integrated to find the instantaneous position of a path. In my integration, I applied the forward differentiation equation with the sampling time as 1 ms.<br /> For sequence of n motion, the total travel time Tt of a 0% blending is:<br /><b>Tt = ( X_1 + X_2 + ... + X_n ) / V_max + n * Ts</b><br />while the total travel time Tt of a 100% blending is:<br /><b>Tt = ( X_1 + X_2 + ... + X_n ) / V_max + Ts</b></p>
+								<p>To further understanding the definition of blending functionality, let's introduce the exponential velocity profile first: As shown in the picture above, The x axis represents time in second, and the y axis represents velocity in m/s and position in meter.In the paper, an exponential velocity equation was given, and it is the blue line in the profile, then the velocity was integrated to find the instantaneous position of a path. In my integration, I applied the forward differentiation equation with the sampling time as 1 ms.<br /> For sequence of n motion, the total travel time Tt of a 0% blending is:<br /><b>Tt = ( X<sub>1</sub> + X<sub>2</sub> + ... + X<sub>n</sub> ) / V<sub>max</sub> + n * Ts</b><br />while the total travel time Tt of a 100% blending is:<br /><b>Tt = ( X<sub>1</sub> + X<sub>2</sub> + ... + X<sub>n</sub> ) / V<sub>max</sub> + Ts</b></p>
 								<p>Based on the principles above, I reapeated the mathematical experiment in the paper: create a figure of eight path with various blend parameters. In my code, I did 0% overlap, 60% overlap, 80% overlap and 96% overlap for the same geometry. The result and the enlarged result are shown below:</p>
 								<img src="images/blend1.png" alt="" style="width:700px;height:525px;" /><br /><img src="images/blend2.png" alt="" style="width:700px;height:525px;" />
 								<p>As shown in the figure, the higher the parameter of blending, the less accurate of the path. Furhtermore, I calculated the motion durations with different percentage of overlap, and the result is tabulated below:</p>
