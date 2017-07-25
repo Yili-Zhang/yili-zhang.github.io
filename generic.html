@@ -284,15 +284,147 @@
 								<p>In general, the research had four stages: Coated/Uncoated test, PTFE stability test, PTFE low-temperature test and Desalination test.</p>
 								<h4>Experimental System Set-up</h4>
 								<p>To test the design properties with the system, a lot of data needs to be collected. For example, in 100 experiments, how long is the average running time? At which part does the water freeze frequently? What was the lowest super-cooled temperature within those experiments? etc. Therefore, we introduced a LabVIEW-controlled automatic system into the cycles:<br />
-								<b><i>a. LabVIEW: </i></b>LabVIEW is used to automate the cycles. When the system runs without freezing, the signals collected by sensors would be transferred into analog data in national instrument (NI) equipments, then the labview processes those data and compare with the previous data to determine the system is status. At the same time, those data is recorded in the Microsoft Excel for researchers to analyze. Whenever the LabVIEW detects a sharp decrease on flow rate, the system would report freezing and then shut down the solenoid valve in refrigerant cycle. At the same time, pump would continue to work so that the water cycle could restore sooner. Whenever the flowrate increases till the setpoint, the selonoid velve opens and the second experiment starts. The picture below shows the LabVIEW user interface.<br />
+								<b><i>a. LabVIEW: </i></b>LabVIEW is used to automate the cycles. When the system runs without freezing, the signals collected by sensors would be transferred into analog data in national instrument (NI) equipments, then the labview processes those data and compare with the previous data to determine the system's status. At the same time, those data is recorded in the Microsoft Excel for researchers to analyze later. Whenever the LabVIEW detects a sharp decrease on flow rate, the system would report freezing and then shut down the solenoid valve in refrigerant cycle. At the same time, pump would continue to work so that the water cycle could restore sooner. Whenever the flowrate increases till the setpoint, the selonoid velve opens and the second experiment starts. The picture below shows the LabVIEW user interface.<br />
 								<img src="images/labview.png" alt="" style="width:960px;height:450px;" /><br />
-								<b><i>a. FlowMeter: </i></b>Flowmeter is a key part of 
-								</p> 
+								<b><i>b. FlowMeter: </i></b><span class="image left"><img src="images/RC.png" alt="" /></span>Flowmeter is a key part in the hardware-software interaction, for the signals it releases determine if the cycles freeze or thaw. In the real application, anti-corrosion flowmeters that directly releases analog data can be as expensive as $10,000, and the flowmeter we got is Adafruit Flow Meter, which worths $20 and releases Pulse Width Modulation (PWM) signals. However, the NI Analog Input block reads only anaog data. As a result, a RC circuit that transfer the PWM signal to analog signal was designed, as shown in the diagram on the right. An Arduino Board was used for establishing the RC circuit, and the program part is attached at the end of the project in case for the further reference.</p> 
 
-								<h4>Coated/Uncoated test</h4> 
-								<h4>PTFE stability test</h4> 
-								<h4>PTFE low-temperature test</h4>  
+								<h4>Coated/Uncoated test</h4>
+								<p>As the super-cooled ID water is meta stable, it is very possible that it freezes at its lowerst temperature, which is the Test Piece Outlet, with little disturbance. Therefore, it came to our minds that having the heat exchanger sheets' surfaces being coated may increase the contact angle of the water inside of the heat exchanger, so that the super-cooled water becomes more stable. We tried three coating materials: Fluorocarbon coating, Nano-florocarbon coating and Organosilane coating. As the results, it proved that the Fluorocarbon coating lasts longest. With the Fluorocarbon coating as the selected coating material, we measured and compared the Test Out Temperatures of coated system and uncoated system. The lower the outlet temperaturem, the more stable of the system. As the result, we found the coated system outperforms the uncoated one. In the future experiments, we all apply the coated system.</p>
+								<h4>PTFE PTFE stability &amp; low-temperature test</h4> 
+								<p>PTFE, also called Teflon, is the abbreviation of Fluorocarbon. With this material being coated in the system, we conducted the stability &amp; low-temperature tests: measure the Test Piece Outlet temperature while decreasing the refrigerant temperature until the system freezes. Then, repeat the same procedure with a different flow rate. Below attached is one of typical results:<br />
+								<img src="images/stability.png" alt="" style="width:980px;height:450px;" /><br />
+								
+							    </p>
 								<h4>Desalination test</h4>
+
+								<!--code-->
+								<br />
+								<b>Arduino Code - Converting PWM Signal into Analog Signal</b>
+								<pre><code>#include "LiquidCrystal.h"
+LiquidCrystal lcd(7, 8, 9, 10, 11, 12);
+
+// which pin to use for reading the sensor? can use any pin!
+#define FLOWSENSORPIN 2
+
+int VoutPin = 9;
+unsigned long previousMillis = 0;
+const long interval = 1000;
+
+//int analogPin = 3;
+float liters;
+int val;
+float rate[10];
+
+// count how many pulses!
+volatile uint16_t pulses = 0;
+// track the state of the pulse pin
+volatile uint8_t lastflowpinstate;
+// you can try to keep time of how long it is between pulses
+volatile uint32_t lastflowratetimer = 0;
+// and use that to calculate a flow rate
+volatile float flowrate;
+// Interrupt is called once a millisecond, looks for any pulses from the sensor!
+SIGNAL(TIMER0_COMPA_vect) {
+  uint8_t x = digitalRead(FLOWSENSORPIN);
+
+  if (x == lastflowpinstate) {
+    lastflowratetimer++;
+    return; // nothing changed!
+  }
+
+  if (x == HIGH) {
+    //low to high transition!
+    pulses++;
+  }
+  lastflowpinstate = x;
+  flowrate = 200.0;
+  flowrate /= lastflowratetimer;  // in hertz
+  lastflowratetimer = 0;
+}
+
+void useInterrupt(boolean v) {
+  if (v) {
+    // Timer0 is already used for millis() - we'll just interrupt somewhere
+    // in the middle and call the "Compare A" function above
+    OCR0A = 0xAF;
+    TIMSK0 |= _BV(OCIE0A);
+  } else {
+    // do not call the interrupt function COMPA anymore
+    TIMSK0 &= ~_BV(OCIE0A);
+  }
+}
+
+void setup() {
+  Serial.begin(9600);
+  Serial.print("Flow sensor test!");
+  lcd.begin(16, 2);
+
+  pinMode(FLOWSENSORPIN, INPUT);
+  digitalWrite(FLOWSENSORPIN, HIGH);
+  lastflowpinstate = digitalRead(FLOWSENSORPIN);
+  useInterrupt(true);
+
+  pinMode(VoutPin, OUTPUT);
+}
+
+void loop()                     // run over and over again
+{
+  //lcd.print(flowrate);
+  //lcd.print(flowrate);
+  //Serial.print("Freq: "); Serial.print(flowrate);
+
+  while (liters != -100) {
+
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= interval) {
+      previousMillis = currentMillis;
+
+      lcd.setCursor(0, 0);
+      lcd.print("Pulses:"); lcd.print(pulses, DEC); lcd.print(" Hz: \n");
+      Serial.print(" Pulses: "); Serial.print(pulses, DEC); Serial.print("\n");
+      liters = pulses;
+      liters /= 7.5;
+      liters = 1.5354 * liters; // Calibration
+      pulses = 0;
+
+      // delay(20);
+
+
+      rate[9] = rate[8];
+      rate[8] = rate[7];
+      rate[7] = rate[6];
+      rate[6] = rate[5];
+      rate[5] = rate[4];
+      rate[4] = rate[3];
+      rate[3] = rate[2];
+      rate[2] = rate[1];
+      rate[1] = rate[0];
+      rate[0] = liters;
+      float AveRate = (rate[9] + rate[8] + rate[7] + rate[6] + rate[5] + rate[4] + rate[3] + rate[2] + rate[1] + rate[0]) / 10;
+      //val = analogRead(analogPin);
+      //val *= (255/1023);
+      val = (AveRate / 0.90) * 225;
+      analogWrite(VoutPin, val);
+      Serial.print(" Flow rate: "); Serial.print(liters); Serial.print(" Liters/min \n");
+      Serial.print(" rate[9]: "); Serial.print(rate[9]); Serial.print(" Liters/min \n");
+      Serial.print(" rate[8]: "); Serial.print(rate[8]); Serial.print(" Liters/min \n");
+      Serial.print(" rate[7]: "); Serial.print(rate[7]); Serial.print(" Liters/min \n");
+      Serial.print(" rate[6]: "); Serial.print(rate[6]); Serial.print(" Liters/min \n");
+      Serial.print(" rate[5]: "); Serial.print(rate[5]); Serial.print(" Liters/min \n");
+      Serial.print(" rate[4]: "); Serial.print(rate[4]); Serial.print(" Liters/min \n");
+      Serial.print(" rate[3]: "); Serial.print(rate[3]); Serial.print(" Liters/min \n");
+      Serial.print(" rate[2]: "); Serial.print(rate[2]); Serial.print(" Liters/min \n");
+      Serial.print(" rate[1]: "); Serial.print(rate[1]); Serial.print(" Liters/min \n");
+      Serial.print(" rate[0]: "); Serial.print(rate[0]); Serial.print(" Liters/min \n");
+      Serial.print(" AveRate: "); Serial.print(AveRate); Serial.print(" Liters/min \n");
+      Serial.print(" Output: "); Serial.println(val); Serial.print("\n");
+    }
+  }
+
+}
+
+								</code></pre>
+
 							</section>
 
 							<!--NC Part-->
