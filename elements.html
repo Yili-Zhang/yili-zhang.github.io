@@ -55,14 +55,42 @@
 
 								<!--Self Introduction-->
 									<h2 id="SelfIntro" style="text-align:center;">Self Introduction</h2>
-									
-									<body>
+									<div style="text-align:center"> 
+										  <button onclick="playPause()">Play/Pause</button> 
+										  <button onclick="makeBig()">Big</button>
+										  <button onclick="makeSmall()">Small</button>
+										  <button onclick="makeNormal()">Normal</button>
+										  <br><br>
+										  <video id="video1" width="420">
+										    <source src="video/SelfIntro.mp4" type="video/mp4">
+										    <source src="video/SelfIntro.ogg" type="video/ogg">
+										    Your browser does not support HTML5 video.
+										  </video>
+										</div> 
 
-									<embed width="420" height="315"
-									src="https://youtu.be/uYFOLQUAwfg">
+										<script> 
+										var myVideo = document.getElementById("video1"); 
 
-									</body>
-								
+										function playPause() { 
+										    if (myVideo.paused) 
+										        myVideo.play(); 
+										    else 
+										        myVideo.pause(); 
+										} 
+
+										function makeBig() { 
+										    myVideo.width = 800; 
+										} 
+
+										function makeSmall() { 
+										    myVideo.width = 400; 
+										} 
+
+										function makeNormal() { 
+										    myVideo.width = 600; 
+										} 
+										</script> 
+
 										<p style="text-align:center;"><a href="https://youtu.be/uYFOLQUAwfg" target="_blank">Self Introduction</a>.</p>
 									<hr />
 									
@@ -500,8 +528,8 @@ print 'It took ' + i + ' iterations to sort the deck.';
 							</section>
 
 					</div>
---> 
-				
+
+	--> 			
 					<footer id="footer">
 						<section>
 							<form method="post" action="//formspree.io/yilizhang6@gmail.com">
