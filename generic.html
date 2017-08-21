@@ -51,7 +51,7 @@
 								</header>
 							
 								<p><span class="image left"><img src="images/gear.jpg" alt="" style="width:254px;height:339px;" /></span>The purpose of this project is to deburr the Airplane Gear Teeth (shown in the pic. on the left) with the industrial robot. Even though the desired deburring path on the gear teeth is irregular, it is composed with basic configurations of circles and rectangles. Therefore, before actually deburring the gear teeth, we researched on deburring circular and rectangular aluminum blocks first to evaluate the methods and performances.<br />
-								As the program goes, we found that there will be three iterations in general: <i><b>Iteration One:</b> Deburr circlular and rectangular aluminum block edges precisely; <b>Iteration Two:</b> Chamfer circlular and rectangular aluminum block edges; <b>Iteration Three:</b> Deburr one tooth of airplane gears.</p></i>
+								As the program goes, we found that there will be three iterations in general: <i><b>Iteration One:</b> Deburr circlular and rectangular aluminum block edges precisely; <b>Iteration Two:</b> Chamfer circlular and rectangular aluminum block edges; <b>Iteration Three:</b> Deburr one tooth of airplane gears.</i></p>
 					
 								<h4>Iteration One: Deburr circlular and rectangular aluminum block edges precisely</h4>
 								<p><b><i>1. Circle</i></b></p>
@@ -129,9 +129,11 @@
 										    myVideo6.width = 600; 
 										} 
 										</script>
-										<p style="text-align:center;">video: duration: 00:00:06</p> 
+										<p style="text-align:center;">video: duration: 00:00:06</p>
+										<p>As shown in the video, the end effector deburrs the edge of the rectangular block along a precise linear path with the hard brush verticlely. This step proved that a linear trajectory design is feasible. However, to avoid the corner collisions, I had the robot stop at every corner of the block, which resulted in a inconsistency of the feedrate. This problem will be taken care in the Iteration Two after I add more features upon this method.</p> 
 
 								<h4>Iteration Two: Chamfer circlular and rectangular aluminum block edges</h4>
+								<p>In the Iteration Two, I updated two things: Firstly, I adjusted the end effector tool angle so that it would create a chamfer on the parts when deburring; Secondly, I changed the deburring path of the rectangle so that the feedrate would be consistent while still being able to avoid corner collisions.</p>
 								<p><b><i>1. Circle</i></b></p>
 								<div style="text-align:center"> 
 										  <button onclick="playPause7()">Play/Pause</button> 
@@ -169,6 +171,36 @@
 										} 
 										</script> 
 										<p style="text-align:center;">video: duration: 00:00:08</p>
+										<p>In the circular path design, besides changing tool angles, I also wrote a simple MatLab programs to determine the center point and the radius of a circle given three points on the edge. The necessity of doing that is because in the actual implementation of the parts onto the table, the position of the part can be slightly off as there are tolerances on both mounting hole and screw bolt. Therefore, whith this code, I just need to jog the tip of the end effector at three different points along the cylinder edge, and I would know the center point and the radius of the cylinder part. The code is shown as below:</p>
+										<pre><code>clear
+clc
+
+% User input data
+promptx1='x1= ';
+x1=input(promptx1);
+prompty1='y1= ';
+y1=input(prompty1);
+promptx2='x2= ';
+x2=input(promptx2);
+prompty2='y2= ';
+y2=input(prompty2);
+promptx3='x3= ';
+x3=input(promptx3);
+prompty3='y3= ';
+y3=input(prompty3);
+
+% calculate center X & Y and redius R
+MX1=(x1+x2)/2; MY1=(y1+y2)/2; G1=(y2-y1)/(x2-x1);
+MX2=(x2+x3)/2; MY2=(y2+y3)/2; G2=(y3-y2)/(x3-x2);
+A=[1/G1 1;1/G2 1];
+C=[MY1+MX1/G1;MY2+MX2/G2];
+B=A\C;
+X=B(1); Y=B(2);
+R=sqrt((x1-X)^2+(y1-Y)^2);
+
+% print
+fprintf('The center of the circle is (%8.5f, %8.5f),\nThe redius of the circle is %8.5f mm\n',X,Y,R);
+										</code></pre>
 
 								<p><b><i>2. Rectangle</i></b></p>
 								<div style="text-align:center"> 
@@ -206,11 +238,12 @@
 										    myVideo8.width = 600; 
 										} 
 										</script>
-										<p style="text-align:center;">video: duration: 00:00:13</p> 
+										<p style="text-align:center;">video: duration: 00:00:13</p>
+										<p><span class="image right"><img src="images/gear.jpg" alt="" style="width:254px;height:339px;" /></span>In this iteration for rectangle, besides changing the end effector tool orientation, I also edited the deburring path of the rectangle. As shown in the picture on the right, at each corner, I added an extra detour so that the robot did not have to stop to avoid the corner collisions.</p>
 
 								<h4>Iteration Three: Deburr one tooth of airplane gears</h4>
 								<p><font size="5" color="red">This week we will deburr one of the gear teeth, and the results will be updated soon.</font></p>
-								<p>#</p>
+
 							</section>
 
 						<!-- ProjctB -->
